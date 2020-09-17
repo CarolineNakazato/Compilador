@@ -24,11 +24,11 @@ public class Compilador {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         Scanner ler = new Scanner(System.in);
-        System.out.printf("Informe o caminho e o nome do arquivo:\n");
+        System.out.println("Informe o caminho e o nome do arquivo:");
+        String filePath = ler.nextLine();
         
-        String nome = ler.nextLine();
-        AnalisadorLexico al = new AnalisadorLexico();
-        System.out.printf(al.AnalisadorLexicoNivel1(nome).toString());
+        AnalisadorLexico lexico = AnalisadorLexico.getInstance();
+        lexico.analisadorLexicoNivel1(filePath);
     }
     
 }

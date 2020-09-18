@@ -122,6 +122,7 @@ public class AnalisadorLexico {
             } else {
                 charRead = bufferedReader.read();
                 currentChar = (char) charRead;
+                if (currentChar == '\n') indexFileLine++;
             }
         }
 
@@ -133,15 +134,22 @@ public class AnalisadorLexico {
                         while (currentChar != '}' && charRead != -1) {
                             charRead = bufferedReader.read();
                             currentChar = (char) charRead;
+                            if (currentChar == '\n') indexFileLine++;
+                        }
+                        
+                        if (charRead == -1) {
+                            System.out.println("\nERRO: Linha " + indexFileLine + "  |  comentário não foi fechado.\n");
                         }
 
                         charRead = bufferedReader.read();
                         currentChar = (char) charRead;
+                        if (currentChar == '\n') indexFileLine++;
 
                     } else if (currentChar == '/') {// achou primeiro /
                         int k = 0; // Variável para sinalizar que achou 2° /
                         charRead = bufferedReader.read();
                         currentChar = (char) charRead;
+                        if (currentChar == '\n') indexFileLine++;
 
                         if (currentChar != '*') {
                             System.out.println("\nERRO: Linha " + indexFileLine + "  |  '/' deve ser seguido por '*' para comentar.\n");
@@ -149,20 +157,24 @@ public class AnalisadorLexico {
                         } else { //achou 1°estrela
                             charRead = bufferedReader.read();
                             currentChar = (char) charRead;
+                            if (currentChar == '\n') indexFileLine++;
 
                             while (k == 0 && charRead != -1) {
                                 while (currentChar != '*' && charRead != -1) {
                                     charRead = bufferedReader.read();
                                     currentChar = (char) charRead;
+                                    if (currentChar == '\n') indexFileLine++;
                                 }
                                 //achou 2° estrela
                                 charRead = bufferedReader.read();
                                 currentChar = (char) charRead;
+                                if (currentChar == '\n') indexFileLine++;
 
                                 if (currentChar == '/') { //achou segunda barra;
                                     k++;
                                     charRead = bufferedReader.read();
                                     currentChar = (char) charRead;
+                                    if (currentChar == '\n') indexFileLine++;
                                 }
                             }
 

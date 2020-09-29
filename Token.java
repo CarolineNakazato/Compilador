@@ -12,12 +12,10 @@ package compilador;
 public class Token {
     private String simbolo;
     private String lexema;
-    private String linha;
 
     public Token() {
         simbolo = null;
         lexema = null;
-        linha = null;
     }
 
 
@@ -36,19 +34,9 @@ public class Token {
     public String getLexema() {
         return this.lexema;
     }
-    
-    public String getLinha() {
-        return this.linha;
-    }
-    
-    public void setLinha(String linha) {
-        this.linha = linha;
-    }
 
     public void print() {
-        System.out.printf("Símbolo: %s\n", simbolo);
+        System.out.printf("Símboli: %s\n", simbolo);
         System.out.printf("Lexema: %s\n", lexema);
-        System.out.printf("Encontrado na Linha: %s\n", linha);
-        System.out.printf("--------------------------\n");
     }
 }

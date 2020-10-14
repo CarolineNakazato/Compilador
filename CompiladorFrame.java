@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +26,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
      * Creates new form CompiladorFrame
      */ 
     String caminho = "0";
+    private final AnalisadorSintatico sintatico;
     
     public CompiladorFrame() {
+        this.sintatico = AnalisadorSintatico.getInstance();
         initComponents();
     }
 
@@ -123,6 +126,11 @@ public class CompiladorFrame extends javax.swing.JFrame {
                 jButton2MouseClicked(evt);
             }
         });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout salvarDialogLayout = new javax.swing.GroupLayout(salvarDialog.getContentPane());
         salvarDialog.getContentPane().setLayout(salvarDialogLayout);
@@ -204,10 +212,9 @@ public class CompiladorFrame extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))
-                        .addContainerGap())))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addComponent(jScrollPane1)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,11 +256,12 @@ public class CompiladorFrame extends javax.swing.JFrame {
             String linha = br.readLine();
             String txt = "";
             while(linha != null) {
-                if(i<10){
+                txt += linha+"\n";
+                /*if(i<10){
                     txt += i +"   |   "+ linha+"\n";
                 }else{
                     txt += i +" |   "+ linha+"\n";
-                }
+                }*/
             
                 linha = br.readLine();
                 i++;
@@ -281,9 +289,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
-                FileWriter arq;
+        FileWriter arq;
         try {
-            arq = new FileWriter(caminhoTxtField.getText());
+            caminho = caminhoTxtField.getText();
+            arq = new FileWriter(caminho);
             PrintWriter gravarArq = new PrintWriter(arq);
 
             gravarArq.printf(codigoTxtArea.getText());
@@ -296,7 +305,13 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private void compilarMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compilarMenuMouseClicked
         // TODO add your handling code here:
+        sintatico.recebeArq(caminho);
+        sintatico.analiseSintatica();
     }//GEN-LAST:event_compilarMenuMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

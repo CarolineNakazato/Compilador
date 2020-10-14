@@ -189,32 +189,18 @@ public class AnalisadorLexico {
                 }
 
                 if (!hasFileEnd()) {
-                    //return this.pegaToken(indexFileLine);                 
-                    token = pegaToken(indexFileLine);
-
-                    if (token.getSimbolo() != null) {
-                        //System.out.println("token != null "+token.getSimbolo());
-                        listaTokens.add(token);
-                        //token.print();
-                    } else {
-                        System.out.println("----TOKENS ENCONTRADOS----");
-                            for(Token aux : listaTokens){
-                                aux.print();
-                            }
-                        break; //quanto trocar o "while" por "if", tirar esse break
-                    }
-
+                    System.out.printf("[lexicalAnalyze] | Line: %d\n", indexFileLine);
+                    System.out.printf("[lexicalAnalyze] | Character: %c\n", currentChar);
+                    token = this.pegaToken(indexFileLine);
+                    listaTokens.add(token);
+                    return token;
                 } else {
-                    System.out.println("----TOKENS ENCONTRADOS----");
-                            for(Token aux : listaTokens){
-                                aux.print();
-                    }
                     this.closeFile();
                 }
 
-            }// else {
+            }//else {
              //   this.closeFile();
-             //}
+            //}
 
         } catch (Exception e) {
             if (e.getMessage() != null) {
@@ -274,7 +260,7 @@ public class AnalisadorLexico {
             currentChar = (char) charRead;
         }
 
-        digito.setSimbolo("Snúmero");
+        digito.setSimbolo("snumero");
         digito.setLexema(numero);
         digito.setLinha(Integer.toString(lineIndex));
         
@@ -299,70 +285,70 @@ public class AnalisadorLexico {
 
         switch (palavra) {
             case "programa":
-                letra.setSimbolo("Sprograma");
+                letra.setSimbolo("sprograma");
                 break;
             case "se":
-                letra.setSimbolo("Sse");
+                letra.setSimbolo("sse");
                 break;
             case "entao":
-                letra.setSimbolo("Sentão");
+                letra.setSimbolo("sentao");
                 break;
             case "senao":
-                letra.setSimbolo("Ssenão");
+                letra.setSimbolo("ssenao");
                 break;
             case "enquanto":
-                letra.setSimbolo("Senquanto");
+                letra.setSimbolo("senquanto");
                 break;
             case "faca":
-                letra.setSimbolo("Sfaça");
+                letra.setSimbolo("sfaca");
                 break;
             case "inicio":
-                letra.setSimbolo("Sinício");
+                letra.setSimbolo("sinicio");
                 break;
             case "fim":
-                letra.setSimbolo("Sfim");
+                letra.setSimbolo("sfim");
                 break;
             case "escreva":
-                letra.setSimbolo("Sescreva");
+                letra.setSimbolo("sescreva");
                 break;
             case "leia":
-                letra.setSimbolo("Sleia");
+                letra.setSimbolo("sleia");
                 break;
             case "var":
-                letra.setSimbolo("Svar");
+                letra.setSimbolo("svar");
                 break;
             case "inteiro":
-                letra.setSimbolo("Sinteiro");
+                letra.setSimbolo("sinteiro");
                 break;
             case "booleano":
-                letra.setSimbolo("Sbooleano");
+                letra.setSimbolo("sbooleano");
                 break;
             case "verdadeiro":
-                letra.setSimbolo("Sverdadeiro");
+                letra.setSimbolo("sverdadeiro");
                 break;
             case "falso":
-                letra.setSimbolo("Sfalso");
+                letra.setSimbolo("sfalso");
                 break;
             case "procedimento":
-                letra.setSimbolo("Sprocedimento");
+                letra.setSimbolo("sprocedimento");
                 break;
             case "funcao":
-                letra.setSimbolo("Sfunção");
+                letra.setSimbolo("sfuncao");
                 break;
             case "div":
-                letra.setSimbolo("Sdiv");
+                letra.setSimbolo("sdiv");
                 break;
             case "e":
-                letra.setSimbolo("Se");
+                letra.setSimbolo("se");
                 break;
             case "ou":
-                letra.setSimbolo("Sou");
+                letra.setSimbolo("sou");
                 break;
             case "nao":
-                letra.setSimbolo("Snão");
+                letra.setSimbolo("snao");
                 break;
             default:
-                letra.setSimbolo("Sidentificador");
+                letra.setSimbolo("sidentificador");
                 break;
         }
 
@@ -383,12 +369,12 @@ public class AnalisadorLexico {
 
         if (currentChar == '=') {
             attr += currentChar;
-            attribution.setSimbolo("Satribuição");
+            attribution.setSimbolo("satribuicao");
             charRead = bufferedReader.read();
             currentChar = (char) charRead;
 
         } else {
-            attribution.setSimbolo("Sdoispontos");
+            attribution.setSimbolo("sdoispontos");
         }
 
         attribution.setLexema(attr);
@@ -402,13 +388,13 @@ public class AnalisadorLexico {
         
         switch (character) {
             case '+':
-                aritimetico.setSimbolo("Smais");
+                aritimetico.setSimbolo("smais");
                 break;
             case '-':
-                aritimetico.setSimbolo("Smenos");
+                aritimetico.setSimbolo("smenos");
                 break;
             case '*':
-                aritimetico.setSimbolo("Smult");
+                aritimetico.setSimbolo("smult");
                 break;
             /*case '/':         // "/" = div, no trataIdPalavraReservada
                 aritimetico.setSimbolo("sdiv");
@@ -440,12 +426,12 @@ public class AnalisadorLexico {
                 
                 if (currentChar == '=') {
                     operation += currentChar;
-                    relational.setSimbolo("Smaiorig");
+                    relational.setSimbolo("smaiorig");
                     
                     charRead = bufferedReader.read();
                     currentChar = (char) charRead;                    
                 } else {
-                    relational.setSimbolo("Smaior");
+                    relational.setSimbolo("smaior");
                 } break;
                 
             case '<':
@@ -454,16 +440,16 @@ public class AnalisadorLexico {
                 
                 if (currentChar == '=') {
                     operation += currentChar;
-                    relational.setSimbolo("Smenorig");
+                    relational.setSimbolo("smenorig");
                     
                     charRead = bufferedReader.read();
                     currentChar = (char) charRead;                    
                 } else {
-                    relational.setSimbolo("Smenor");
+                    relational.setSimbolo("smenor");
                 } break;
                 
             case '=':
-                relational.setSimbolo("Sig");
+                relational.setSimbolo("sig");
                 
                 charRead = bufferedReader.read();
                 currentChar = (char) charRead;
@@ -476,7 +462,7 @@ public class AnalisadorLexico {
                 
                 if (currentChar == '=') {
                     operation += currentChar;
-                    relational.setSimbolo("Sdif");
+                    relational.setSimbolo("sdif");
                     
                     charRead = bufferedReader.read();
                     currentChar = (char) charRead;                    
@@ -501,19 +487,19 @@ public class AnalisadorLexico {
         
         switch (character) {
             case ';':
-                punctuation.setSimbolo("Sponto_vírgula");
+                punctuation.setSimbolo("sponto_virgula");
                 break;
             case ',':
-                punctuation.setSimbolo("Svírgula");
+                punctuation.setSimbolo("svirgula");
                 break;
             case '(':
-                punctuation.setSimbolo("Sabre_parênteses");
+                punctuation.setSimbolo("sabre_parenteses");
                 break;
             case ')':
-                punctuation.setSimbolo("Sfecha_parênteses");
+                punctuation.setSimbolo("sfecha_parenteses");
                 break;
             case '.':
-                punctuation.setSimbolo("Sponto");
+                punctuation.setSimbolo("sponto");
                 break;
             default:
                 //System.out.println("\nERRO LEXICO: Linha "+lineIndex+"  |  Chamou o trataPontuacao errado! (???)\n");

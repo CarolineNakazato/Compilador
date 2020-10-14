@@ -12,13 +12,13 @@ package compilador;
 public class AnalisadorSintatico {
     private static AnalisadorSintatico instance = null;
     private String arq;
-    private int label;
+   // private int label;
 
     private final AnalisadorLexico lexico;
 
     private Token token;
     //private Token buffer;
-    private TabelaSimbolo tabela;
+    //private TabelaSimbolo tabela;
 
     private final MensagensErro message;
     //private String erro;
@@ -34,7 +34,7 @@ public class AnalisadorSintatico {
     private AnalisadorSintatico() {
         this.lexico = AnalisadorLexico.getInstance();
         this.message = MensagensErro.getInstance();
-        this.tabela = TabelaSimbolo.getInstance();
+        //this.tabela = TabelaSimbolo.getInstance();
         this.arq = null;
         //this.label = 1;
         this.token = null;
@@ -63,95 +63,105 @@ public class AnalisadorSintatico {
      *  Analisador Sintatico
      */
     public void analiseSintatica() {
-        String scopeProgram;
-        ProcedureProgram symbolProgram = new ProcedureProgram();
+        //String scopeProgram;
+        //ProcedureProgram symbolProgram = new ProcedureProgram();
 
          try {
             token = lexico.analisadorLexicoNivel1(arq);
-            token.print();
-
+            //token.print();
+            //System.out.println("entrou 2 " +token.getLexema());
             if (!isEmpty(token)) {
                 if (token.getSimbolo().equals("sprograma")) {
                     token = lexico.analisadorLexicoNivel1(arq);
                     token.print();
-
+                    //System.out.println("[entrou"+token);
                     if (!isEmpty(token)) {
                         if (token.getSimbolo().equals("sidentificador")) {
-                            symbolProgram.setLexema(token.getLexema());
+                            /*symbolProgram.setLexema(token.getLexema());
                             symbolProgram.setEscopo("");
                             tabela.inserirSimbolo(symbolProgram);
 
-                            scopeProgram = token.getLexema();
+                            scopeProgram = token.getLexema();*/
                             token = lexico.analisadorLexicoNivel1(arq);
                             token.print();
 
                             if (!isEmpty(token)) {
-                                if (token.getSimbolo().equals("sponto_vírgula")) {
-                                    analisaBloco(scopeProgram);
+                                if (token.getSimbolo().equals("sponto_virgula")) {
+                                    analisaBloco();
 
                                     if (token.getSimbolo().equals("sponto")) {
                                         
                                         token = lexico.analisadorLexicoNivel1(arq);
                                         
                                         if (!lexico.hasFileEnd()) {
-                                            //throw new Exception(message.endoffileError("syntaticAnalyze", token));
+                                            //System.out.println("[AnalisadorSintatico] | fim de arq "+token);
+                                            throw new Exception(message.endoffileError("syntaticAnalyze", token));
                                         }
                                     } else {
-                                        //throw new Exception(message.dotError("syntaticAnalyze", token));
+                                        //System.out.println("[AnalisadorSintatico] | esperava ponto "+token);
+                                        throw new Exception(message.dotError("syntaticAnalyze", token));
                                     }
 
                                 } else {
-                                    //throw new Exception(message.semicolonError("syntaticAnalyze", token));
+                                    //System.out.println("[AnalisadorSintatico] | esperava ponto e virg "+token);
+                                    throw new Exception(message.semicolonError("syntaticAnalyze", token));
                                 }
 
                             } else {
+                               //System.out.println("[AnalisadorSintatico] | token vazio");
                                 throw new Exception();
                             }
 
                         } else {
-                            //throw new Exception(message.identifierError("syntaticAnalyze", token));
+                            //System.out.println("[AnalisadorSintatico] | esperava identificador "+token);
+                            throw new Exception(message.identifierError("syntaticAnalyze", token));
                         }
 
                     } else {
+                        //System.out.println("[AnalisadorSintatico] | token vazio");
                         throw new Exception();
                     }
 
                 } else {
-                    //throw new Exception(message.programError("syntaticAnalyze", token));
+                    //System.out.println("[AnalisadorSintatico] | esperava sprograma "+token);
+                    throw new Exception(message.programError("syntaticAnalyze", token));
                 }
 
             } else {
+                //System.out.println("[AnalisadorSintatico] | token vazio");
                 throw new Exception();
             }
 
         } catch (Exception e) {
-            if (e.getMessage() != null) {
+           
+            System.out.println("[AnalisadorSintatico] | Erro");
+             if (e.getMessage() != null) {
                 System.out.println(e.getMessage());
             }
 
-            System.out.println("[AnalisadorSintatico] | Erro");
             //System.out.println("[syntaticAnalyze] | Ending compilation process");
         }
 
-        System.out.println("\n[syntaticAnalyze] | Symbol Table:");
-        tabela.printTabela();
-        symbolProgram = null;
+        //System.out.println("\n[syntaticAnalyze] | Symbol Table:");
+        /*tabela.printTabela();
+        symbolProgram = null;*/
     }
 
-   private void analisaBloco(String scope) throws Exception {
+   private void analisaBloco() throws Exception {
         token = lexico.analisadorLexicoNivel1(arq);
         token.print();
 
         if (!isEmpty(token)) {
-            analisaDeclaracaoDeVariaveis(scope);
-            analisaDeclaracaoDeSubRotinas(scope);
+            analisaDeclaracaoDeVariaveis();
+            analisaDeclaracaoDeSubRotinas();
             analisaComandos();
         } else {
+            System.out.println("[analisaBloco] | token vazio ");
             throw new Exception();
         }
     }
 
-    private void analisaDeclaracaoDeVariaveis(String scope) throws Exception { 
+    private void analisaDeclaracaoDeVariaveis() throws Exception { 
         if (token.getSimbolo().equals("svar")) {
             token = lexico.analisadorLexicoNivel1(arq);
             token.print();
@@ -159,9 +169,9 @@ public class AnalisadorSintatico {
             if (!isEmpty(token)) {
                 if (token.getSimbolo().equals("sidentificador")) {
                     while (token.getSimbolo().equals("sidentificador")) {
-                        analisaVariaveis(scope);
+                        analisaVariaveis();
 
-                        if (token.getSimbolo().equals("sponto_vírgula")) {
+                        if (token.getSimbolo().equals("sponto_virgula")) {
                             token = lexico.analisadorLexicoNivel1(arq);
                             token.print();
 
@@ -170,27 +180,30 @@ public class AnalisadorSintatico {
                             }
 
                         } else {
-                            //throw new Exception(message.semicolonError("analyzeVariablesDeclaration", token));
+                            System.out.println("[analyzeVariablesDeclaration] | esperava pont e virg "+token);
+                            throw new Exception(message.semicolonError("analyzeVariablesDeclaration", token));
                         }
                     }
 
                 } else {
-                    //throw new Exception(message.identifierError("analyzeVariablesDeclaration", token));
+                    System.out.println("[analyzeVariablesDeclaration] | esperava identificador "+token);
+                    throw new Exception(message.identifierError("analyzeVariablesDeclaration", token));
                 }
             } else {
+                System.out.println("[analyzeVariablesDeclaration] | token vazio ");
                 throw new Exception();
             }
         }
     }
 
-    private void analisaVariaveis(String scope) throws Exception {
+    private void analisaVariaveis() throws Exception {
        while (!token.getSimbolo().equals("sdoispontos")) {
-            Variavel simbolo = new Variavel();
+            //Variavel simbolo = new Variavel();
 
             if (token.getSimbolo().equals("sidentificador")) {
-                simbolo.setLexema(token.getLexema());
+                /*simbolo.setLexema(token.getLexema());
                 simbolo.setEscopo(scope);
-                tabela.inserirSimbolo(simbolo);
+                tabela.inserirSimbolo(simbolo);*/
 
                 token = lexico.analisadorLexicoNivel1(arq);
                 token.print();
@@ -204,20 +217,23 @@ public class AnalisadorSintatico {
 
                             if (!isEmpty(token)) {
                                 if (token.getSimbolo().equals("sdoispontos")) {
-                                    //throw new Exception(message.colonError("analyzeVariables", token));
+                                    System.out.println("[analisaVariaveis] | esperava pont e virg "+token);
+                                    throw new Exception(message.colonError("analyzeVariables", token));
                                 }
 
                             } else {
+                                System.out.println("[analisaVariaveis] | token cazio ");
                                 throw new Exception();
                             }
                         }
                     }
 
                 } else {
+                    System.out.println("[analisaVariaveis] | token vazio ");
                     throw new Exception();
                 }
             }
-            simbolo = null;
+            //simbolo = null;
         }
 
         token = lexico.analisadorLexicoNivel1(arq);
@@ -226,11 +242,12 @@ public class AnalisadorSintatico {
         if (!isEmpty(token)) {
             analisaTipo();
         } else {
+            System.out.println("[analisaVariaveis] | token vazio ");
             throw new Exception();
         }
     }
 
-    private void analisaDeclaracaoDeSubRotinas(String scope) throws Exception {
+    private void analisaDeclaracaoDeSubRotinas() throws Exception {
         int flag = 0;
         
         if (token.getSimbolo().equals("sprocedimento") || token.getSimbolo().equals("sfuncao")) {
@@ -239,54 +256,57 @@ public class AnalisadorSintatico {
 
         while (token.getSimbolo().equals("sprocedimento") || token.getSimbolo().equals("sfuncao")) {
             if (token.getSimbolo().equals("sprocedimento")) {
-                analisaDeclaracaoDeProcedimento(scope);
+                analisaDeclaracaoDeProcedimento();
             } else {
-                analisaDeclaracaoDeFuncao(scope);
+                analisaDeclaracaoDeFuncao();
             }
 
-            if (token.getSimbolo().equals("sponto_vírgula")) {
+            if (token.getSimbolo().equals("sponto_virgula")) {
                 token = lexico.analisadorLexicoNivel1(arq);
                 token.print();
 
                 if (isEmpty(token)) {
+                    System.out.println("[analisaVariaveis] | token vazio ");
                     throw new Exception();
                 }
 
             } else {
-                //throw new Exception(message.semicolonError("analyzeSubRoutineDeclaration", token));
+                System.out.println("[analisaDeclaracaoDeSubRotinas] | esperava pont e virg "+token);
+                throw new Exception(message.semicolonError("analyzeSubRoutineDeclaration", token));
             }
         }
 
-        if (flag == 1) {
+        /*if (flag == 1) {
             //Gera(auxrot,NULL,´ ´,´ ´) {início do principal} 
-        }
+        }*/
     }
 
-    private void analisaDeclaracaoDeProcedimento(String scope) throws Exception {
-        String scopeProcedure;
-        ProcedureProgram symbolProcedure = new ProcedureProgram();
+    private void analisaDeclaracaoDeProcedimento() throws Exception {
+        //String scopeProcedure;
+       // ProcedureProgram symbolProcedure = new ProcedureProgram();
 
         token = lexico.analisadorLexicoNivel1(arq);
         token.print();
 
         if (!isEmpty(token)) {
             if (token.getSimbolo().equals("sidentificador")) {
-                symbolProcedure.setLexema(token.getLexema());
-                symbolProcedure.setEscopo(scope);
+                /*symbolProcedure.setLexema(token.getLexema());
+                symbolProcedure.setEscopo();
                 //Pesquisa
                 //Inserir tabela de símbolos
                 tabela.inserirSimbolo(symbolProcedure);
                 //Gera rótulo
 
-                scopeProcedure = token.getLexema();
+                scopeProcedure = token.getLexema();*/
                 token = lexico.analisadorLexicoNivel1(arq);
                 token.print();
 
                 if (!isEmpty(token)) {
-                    if (token.getSimbolo().equals("sponto_vírgula")) {
-                        analisaBloco(scopeProcedure);
+                    if (token.getSimbolo().equals("sponto_virgula")) {
+                        analisaBloco();
                     } else {
-                        //throw new Exception(message.semicolonError("analyzeProcedureDeclaration", token));
+                        System.out.println("[analyzeProcedureDeclaration] | esperava pont e virg "+token);
+                        throw new Exception(message.semicolonError("analyzeProcedureDeclaration", token));
                     }
 
                 } else {
@@ -294,14 +314,15 @@ public class AnalisadorSintatico {
                 }
 
             } else {
-                //throw new Exception(message.identifierError("analyzeProcedureDeclaration", token));
+                System.out.println("[analyzeProcedureDeclaration] | esperava identificador "+token);
+                throw new Exception(message.identifierError("analyzeProcedureDeclaration", token));
             }
 
         } else {
             throw new Exception();
         }
 
-        symbolProcedure = null;
+       // symbolProcedure = null;
     }
 
     private void AnalisaChamadaDeProcedimento() throws Exception {
@@ -315,9 +336,9 @@ public class AnalisadorSintatico {
         }
     }
 
-    private void analisaDeclaracaoDeFuncao(String scope) throws Exception {
-        String scopeFunction;
-        Funcao simbolo = new Funcao();
+    private void analisaDeclaracaoDeFuncao() throws Exception {
+        //String scopeFunction;
+        //Funcao simbolo = new Funcao();
 
         token = lexico.analisadorLexicoNivel1(arq);
         token.print();
@@ -325,11 +346,11 @@ public class AnalisadorSintatico {
         if (!isEmpty(token)) {
             //Label
             if (token.getSimbolo().equals("sidentificador")) {
-                simbolo.setLexema(token.getLexema());
+                /*simbolo.setLexema(token.getLexema());
                 simbolo.setEscopo(scope);
                 tabela.inserirSimbolo(simbolo);
 
-                scopeFunction = token.getLexema();
+                scopeFunction = token.getLexema();*/
                 token = lexico.analisadorLexicoNivel1(arq);
                 token.print();
 
@@ -348,10 +369,10 @@ public class AnalisadorSintatico {
                                 token.print();
 
                                 if (!isEmpty(token)) {
-                                    if (token.getSimbolo().equals("sponto_vírgula")) {
-                                        analisaBloco(scopeFunction);
+                                    if (token.getSimbolo().equals("sponto_virgula")) {
+                                        analisaBloco();
                                     } else {
-                                       // throw new Exception(message.semicolonError("analyzeFunctionDeclaration", token));
+                                        throw new Exception(message.semicolonError("analyzeFunctionDeclaration", token));
                                     }
 
                                 } else {
@@ -359,7 +380,7 @@ public class AnalisadorSintatico {
                                 }
 
                             } else {
-                                //throw new Exception(message.typeError("analyzeFunctionDeclaration", token));
+                                throw new Exception(message.typeError("analyzeFunctionDeclaration", token));
                             }
 
                         } else {
@@ -367,7 +388,7 @@ public class AnalisadorSintatico {
                         }
 
                     } else {
-                        //throw new Exception(message.colonError("analyzeFunctionDeclaration", token));
+                        throw new Exception(message.colonError("analyzeFunctionDeclaration", token));
                     }
 
                 } else {
@@ -375,14 +396,14 @@ public class AnalisadorSintatico {
                 }
 
             } else {
-               // throw new Exception(message.identifierError("analyzeFunctionDeclaration", token));
+               throw new Exception(message.identifierError("analyzeFunctionDeclaration", token));
             }
 
         } else {
             throw new Exception();
         }
 
-        simbolo = null;
+        //simbolo = null;
     }
 
    
@@ -395,7 +416,7 @@ public class AnalisadorSintatico {
                 analisaComando();
 
                 while (!token.getSimbolo().equals("sfim")) {
-                    if (token.getSimbolo().equals("sponto_vírgula")) {
+                    if (token.getSimbolo().equals("sponto_virgula")) {
                         token = lexico.analisadorLexicoNivel1(arq);
                         token.print();
 
@@ -409,7 +430,7 @@ public class AnalisadorSintatico {
                         }
 
                     } else {
-                        //throw new Exception(message.semicolonError("analyzeCommands", token));
+                        throw new Exception(message.semicolonError("analyzeCommands", token));
                     }
                 }
                 
@@ -420,7 +441,7 @@ public class AnalisadorSintatico {
             }
 
         } else {
-            //throw new Exception(message.beginError("analyzeCommands", token));
+            throw new Exception(message.beginError("analyzeCommands", token));
         }
     }
 
@@ -480,12 +501,12 @@ public class AnalisadorSintatico {
                                 }
 
                             } else {
-                                //throw new Exception(message.closeparenthesesError("analyzeRead", token));
+                                throw new Exception(message.closeparenthesesError("analyzeRead", token));
                             }
                         }
                         // senao throw new SyntacticException();
                     } else {
-                        //throw new Exception(message.identifierError("analyzeRead", token));
+                        throw new Exception(message.identifierError("analyzeRead", token));
                     }
 
                 } else {
@@ -493,7 +514,7 @@ public class AnalisadorSintatico {
                 }
 
             } else {
-                //throw new Exception(message.openparenthesesError("analyzeRead", token));
+                throw new Exception(message.openparenthesesError("analyzeRead", token));
             }
 
         } else {
@@ -522,15 +543,15 @@ public class AnalisadorSintatico {
                     }
 
                 } else {
-                    //throw new Exception(message.closeparenthesesError("analyzeWrite", token));
+                    throw new Exception(message.closeparenthesesError("analyzeWrite", token));
                 }
                 // senao throw new SyntacticException();
             } else {
-                //throw new Exception(message.identifierError("analyzeWrite", token));
+                throw new Exception(message.identifierError("analyzeWrite", token));
             }
 
         } else {
-            //throw new Exception(message.openparenthesesError("analyzeWrite", token));
+            throw new Exception(message.openparenthesesError("analyzeWrite", token));
         }
     }
 
@@ -552,7 +573,7 @@ public class AnalisadorSintatico {
                 }
 
             } else {
-                //throw new Exception(message.doError("analyzeWhile", token));
+                throw new Exception(message.doError("analyzeWhile", token));
             }
 
         } else {
@@ -590,7 +611,7 @@ public class AnalisadorSintatico {
                 }
 
             } else {
-                //throw new Exception(message.thenError("analyzeIf", token));
+                throw new Exception(message.thenError("analyzeIf", token));
             }
 
         } else {
@@ -612,7 +633,7 @@ public class AnalisadorSintatico {
          if (token.getSimbolo().equals("sinteiro") || token.getSimbolo().equals("sbooleano")) {
             //table.setTypeSymbols(token.getLexeme());
         } else {
-            //throw new Exception(message.typeError("analyzeType", token));
+            throw new Exception(message.typeError("analyzeType", token));
         }
 
         token = lexico.analisadorLexicoNivel1(arq);
@@ -719,7 +740,7 @@ public class AnalisadorSintatico {
                     }
 
                 } else {
-                    //throw new Exception(message.closeparenthesesError("analyzeFactor", token));
+                    throw new Exception(message.closeparenthesesError("analyzeFactor", token));
                 }
             } else {
                 throw new Exception();
@@ -734,7 +755,7 @@ public class AnalisadorSintatico {
             }
 
         } else {
-           //throw new Exception(message.booleanError("analyzeFactor", token));
+           throw new Exception(message.booleanError("analyzeFactor", token));
         }
     }
 }
